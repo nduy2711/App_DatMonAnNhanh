@@ -17,6 +17,7 @@ import com.example.nhom10.Control.DatabaseHandler;
 import com.example.nhom10.Model.Product;
 import com.example.nhom10.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends BaseAdapter {
@@ -81,5 +82,11 @@ public class ProductAdapter extends BaseAdapter {
         }
 
         return convertView;
+    }
+
+    public void updateProducts(ArrayList<Product> newProducts) {
+        this.productList.clear();
+        this.productList.addAll(newProducts);
+        notifyDataSetChanged();
     }
 }

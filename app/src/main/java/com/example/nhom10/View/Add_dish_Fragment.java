@@ -25,6 +25,8 @@ import com.example.nhom10.Control.ProductHandler;
 import com.example.nhom10.Model.Product;
 import com.example.nhom10.R;
 
+import java.util.ArrayList;
+
 public class Add_dish_Fragment extends DialogFragment {
 
     private EditText dishNameEditText, dishPriceEditText;
@@ -59,6 +61,7 @@ public class Add_dish_Fragment extends DialogFragment {
             categoryId = getArguments().getInt(ARG_CATEGORY_ID);
         }
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,8 +100,21 @@ public class Add_dish_Fragment extends DialogFragment {
             String image = selectedImageUriString;
 
             DatabaseHandler dbHelper = new DatabaseHandler(getContext());
-            dbHelper.insertItem(new Product(20, categoryId, dishName, image, dishPrice)); // Thêm món ăn vào database
-            dismiss(); // Đóng dialog sau khi thêm món ăn
+            int newMenuItemID = dbHelper.getMaxMenuItemID() + 1;
+
+             dbHelper.insertItem(new Product(newMenuItemID, categoryId, dishName, image, dishPrice));
+            Toast.makeText(getContext(), "Món ăn đã được thêm thành công", Toast.LENGTH_SHORT).show();
+             Fragment parentFragment = getParentFragment();
+             if (parentFragment instanceof MeatFragment) {
+                 ((MeatFragment) parentFragment).loadFragment(); // Reload MeatFragment
+             } else if (parentFragment instanceof TokbokkiFragment) {
+                 ((TokbokkiFragment) parentFragment).loadFragment(); // Reload TokbokkiFragment
+             } else if (parentFragment instanceof HotpotFragment) {
+                 ((HotpotFragment) parentFragment).loadFragment(); // Reload HotpotFragment
+             } else if (parentFragment instanceof SnackFragment) {
+                 ((SnackFragment) parentFragment).loadFragment(); // Reload SnackFragment
+             }
+            dismiss();
         });
 
         return view;

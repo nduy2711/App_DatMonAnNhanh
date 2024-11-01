@@ -185,4 +185,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public SQLiteDatabase open() {
         return this.getWritableDatabase();
     }
+
+    public int getMaxMenuItemID() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT MAX(menuItemID) FROM Item", null);
+        int maxId = 0;
+        if (cursor.moveToFirst()) {
+            maxId = cursor.getInt(0);
+        }
+        cursor.close();
+        return maxId;
+    }
 }

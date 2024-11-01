@@ -65,6 +65,21 @@ public class ProductHandler extends SQLiteOpenHelper {
         return productList;
     }
 
+    public void deleteProduct(int menuItemId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            int rowsAffected = db.delete(MENU_ITEM_TABLE, MENU_ITEM_ID + " = ?", new String[]{String.valueOf(menuItemId)});
+            if (rowsAffected > 0) {
+                Log.d("ProductHandler", "Deleted product with ID: " + menuItemId);
+            } else {
+                Log.d("ProductHandler", "No product found with ID: " + menuItemId);
+            }
+        } catch (Exception e) {
+            Log.e("ProductHandler", "Error deleting product: " + e.getMessage());
+        } finally {
+            db.close();
+        }
+    }
 
 
 }

@@ -1,5 +1,6 @@
 package com.example.nhom10.View;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.nhom10.Control.ProductHandler;
 import com.example.nhom10.Model.Category;
@@ -35,6 +38,7 @@ public class TokbokkiFragment extends Fragment {
     private ProductHandler productHandler;
     private TextView totalPriceTextView;
     private Button confirmButton;
+    private ImageView addDishButton;
 
     private ArrayList<Product> selectedProducts = new ArrayList<>();
     private int totalPrice = 0;
@@ -88,27 +92,41 @@ public class TokbokkiFragment extends Fragment {
         listView = view.findViewById(R.id.item_listView);
         totalPriceTextView = view.findViewById(R.id.total_price);
         confirmButton = view.findViewById(R.id.confirm_button);
+        addDishButton = view.findViewById(R.id.img_addDishButton);
 
         // Initialize ProductHandler
         productHandler = new ProductHandler(getContext());
 
         // Get the products for category 1 (Thịt nướng)
-        ArrayList<Product> meatProducts = productHandler.getProductsByCategory(2);
+        ArrayList<Product> products = productHandler.getProductsByCategory(2);
 
         // Set up the adapter for GridView
-        productAdapter = new ProductAdapter(getContext(), meatProducts);
+        productAdapter = new ProductAdapter(getContext(), products);
         gridView.setAdapter(productAdapter);
 
         // Set up the custom adapter for ListView
         orderAdapter = new OrderAdapter(getContext(), selectedProducts);
         listView.setAdapter(orderAdapter);
 
+        addDishButton.setOnClickListener(v -> {
+            showAddDishFragment();
+        });
+
         // GridView item click listener
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Product selectedProduct = meatProducts.get(i);
+                Product selectedProduct = products.get(i);
                 addToOrder(selectedProduct);
+            }
+        });
+
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Product productToRemove = products.get(position);
+                deleteProductAndUpdateUI(productToRemove);
+                return true; // Return true to indicate the event was handled
             }
         });
 
@@ -145,6 +163,32 @@ public class TokbokkiFragment extends Fragment {
         // Refresh the order ListView and total price
         orderAdapter.notifyDataSetChanged();
         totalPriceTextView.setText("Tổng cộng: " + totalPrice + " VND");
+    }
+
+    private void showAddDishFragment() {
+        Add_dish_Fragment addDishFragment = Add_dish_Fragment.newInstance(2); // Truyền categoryId của MeatFragment là 1
+        addDishFragment.show(getParentFragmentManager(), "add_dish_fragment");
+    }
+
+    public void loadFragment() {
+        ArrayList<Product> updatedMeatProducts = productHandler.getProductsByCategory(2);
+        productAdapter.updateProducts(updatedMeatProducts);
+    }
+
+    private void deleteProductAndUpdateUI(Product product) {
+        // Tạo một AlertDialog để xác nhận xóa
+        new AlertDialog.Builder(getContext())
+                .setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc muốn xóa món ăn " + product.getName() + " này ra khỏi thực đơn không?")
+                .setPositiveButton("Có", (dialog, which) -> {
+                    // Nếu người dùng chọn "Có", xóa sản phẩm
+                    productHandler.deleteProduct(product.getMenuItemId());
+                    ArrayList<Product> updatedProducts = productHandler.getProductsByCategory(2); // Thay đổi ID danh mục theo từng Fragment
+                    productAdapter.updateProducts(updatedProducts);
+                    Toast.makeText(getContext(), product.getName() + " đã bị xóa!", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Không", null) // Nếu người dùng chọn "Không", chỉ cần đóng dialog
+                .show();
     }
 
 }
