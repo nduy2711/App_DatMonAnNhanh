@@ -1,0 +1,8 @@
+<!-- res/drawable/border_box.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FFFFFF" /> <!-- Màu nền của viền (có thể là màu trong suốt) -->
+    <stroke
+        android:width="2dp"
+        android:color="#0000FF" /> <!-- Độ dày và màu sắc của viền (ở đây là màu xanh dương) -->
+    <corners android:radius="4dp" /> <!-- Góc bo của khung (có thể thay đổi) -->
+</shape>

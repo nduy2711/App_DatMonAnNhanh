@@ -1,11 +1,11 @@
 package com.example.nhom10.View;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nhom10.Control.ProductHandler;
-import com.example.nhom10.Model.Category;
 import com.example.nhom10.Model.Product;
 import com.example.nhom10.R;
 
@@ -26,10 +25,10 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TokbokkiFragment#newInstance} factory method to
+ * Use the {@link Snack_Fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TokbokkiFragment extends Fragment {
+public class Snack_Fragment extends Fragment {
 
     private GridView gridView;
     private ListView listView;
@@ -39,6 +38,7 @@ public class TokbokkiFragment extends Fragment {
     private TextView totalPriceTextView;
     private Button confirmButton;
     private ImageView addDishButton;
+    private int tableId;
 
     private ArrayList<Product> selectedProducts = new ArrayList<>();
     private int totalPrice = 0;
@@ -52,7 +52,7 @@ public class TokbokkiFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public TokbokkiFragment() {
+    public Snack_Fragment() {
         // Required empty public constructor
     }
 
@@ -62,11 +62,11 @@ public class TokbokkiFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TokbokkiFragment.
+     * @return A new instance of fragment SnackFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TokbokkiFragment newInstance(String param1, String param2) {
-        TokbokkiFragment fragment = new TokbokkiFragment();
+    public static Snack_Fragment newInstance(String param1, String param2) {
+        Snack_Fragment fragment = new Snack_Fragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -87,8 +87,11 @@ public class TokbokkiFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_tokbokki, container, false);
-        gridView = view.findViewById(R.id.tokbokki_gridview);
+        View view = inflater.inflate(R.layout.fragment_snack, container, false);
+        if (getArguments() != null) {
+            tableId = getArguments().getInt("TABLE_ID", -1); // Lấy tableId, giá trị mặc định là -1
+        }
+        gridView = view.findViewById(R.id.snack_gridview);
         listView = view.findViewById(R.id.item_listView);
         totalPriceTextView = view.findViewById(R.id.total_price);
         confirmButton = view.findViewById(R.id.confirm_button);
@@ -98,7 +101,7 @@ public class TokbokkiFragment extends Fragment {
         productHandler = new ProductHandler(getContext());
 
         // Get the products for category 1 (Thịt nướng)
-        ArrayList<Product> products = productHandler.getProductsByCategory(2);
+        ArrayList<Product> products = productHandler.getProductsByCategory(4);
 
         // Set up the adapter for GridView
         productAdapter = new ProductAdapter(getContext(), products);
@@ -108,16 +111,20 @@ public class TokbokkiFragment extends Fragment {
         orderAdapter = new OrderAdapter(getContext(), selectedProducts);
         listView.setAdapter(orderAdapter);
 
-        addDishButton.setOnClickListener(v -> {
-            showAddDishFragment();
-        });
-
         // GridView item click listener
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Product selectedProduct = products.get(i);
                 addToOrder(selectedProduct);
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Product selectedProduct = selectedProducts.get(position);
+                removeFromOrder(selectedProduct, position);
             }
         });
 
@@ -130,15 +137,19 @@ public class TokbokkiFragment extends Fragment {
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        addDishButton.setOnClickListener(v -> {
+            showAddDishFragment();
+        });
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Product selectedProduct = selectedProducts.get(position);
-                removeFromOrder(selectedProduct, position);
+            public void onClick(View v) {
+                confirmOrder();
             }
         });
 
         return view;
+
     }
 
     private void addToOrder(Product product) {
@@ -166,12 +177,12 @@ public class TokbokkiFragment extends Fragment {
     }
 
     private void showAddDishFragment() {
-        Add_dish_Fragment addDishFragment = Add_dish_Fragment.newInstance(2); // Truyền categoryId của MeatFragment là 1
+        Add_dish_Fragment addDishFragment = Add_dish_Fragment.newInstance(4); // Truyền categoryId của MeatFragment là 1
         addDishFragment.show(getParentFragmentManager(), "add_dish_fragment");
     }
 
     public void loadFragment() {
-        ArrayList<Product> updatedMeatProducts = productHandler.getProductsByCategory(2);
+        ArrayList<Product> updatedMeatProducts = productHandler.getProductsByCategory(4);
         productAdapter.updateProducts(updatedMeatProducts);
     }
 
@@ -183,7 +194,7 @@ public class TokbokkiFragment extends Fragment {
                 .setPositiveButton("Có", (dialog, which) -> {
                     // Nếu người dùng chọn "Có", xóa sản phẩm
                     productHandler.deleteProduct(product.getMenuItemId());
-                    ArrayList<Product> updatedProducts = productHandler.getProductsByCategory(2); // Thay đổi ID danh mục theo từng Fragment
+                    ArrayList<Product> updatedProducts = productHandler.getProductsByCategory(4); // Thay đổi ID danh mục theo từng Fragment
                     productAdapter.updateProducts(updatedProducts);
                     Toast.makeText(getContext(), product.getName() + " đã bị xóa!", Toast.LENGTH_SHORT).show();
                 })
@@ -191,4 +202,17 @@ public class TokbokkiFragment extends Fragment {
                 .show();
     }
 
+    private void confirmOrder() {
+        if (selectedProducts.isEmpty()) {
+            Toast.makeText(getContext(), "Không có món nào trong giỏ hàng!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Tạo một Intent để chuyển sang Bill_Activity
+        Intent intent = new Intent(getActivity(), Bill_Activity.class);
+        intent.putParcelableArrayListExtra("selectedProducts", selectedProducts); // Truyền danh sách sản phẩm
+        intent.putExtra("totalPrice", totalPrice); // Truyền tổng giá tiền
+        intent.putExtra("TABLE_ID", tableId); // Truyền tableId
+        startActivity(intent);
+    }
 }

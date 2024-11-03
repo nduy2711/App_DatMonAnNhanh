@@ -1,10 +1,8 @@
 package com.example.nhom10.View;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -17,14 +15,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 
-import com.example.nhom10.Control.LoginHandler;
-import com.example.nhom10.Control.ProductHandler;
-import com.example.nhom10.Model.Category;
-import com.example.nhom10.Model.Product;
 import com.example.nhom10.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -39,6 +31,8 @@ public class Item_Activity extends AppCompatActivity {
     NavigationView navigationView;
     FrameLayout frameLayout;
     BottomNavigationView bt_navigation;
+    int tableId; // Khai báo biến tableId
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +44,9 @@ public class Item_Activity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Nhận tableId từ Intent
+        tableId = getIntent().getIntExtra("TABLE_ID", -1);
 
         addControls();
 
@@ -77,31 +74,35 @@ public class Item_Activity extends AppCompatActivity {
                 int itemId = item.getItemId();
 
                 if (itemId == R.id.item_meat) {
-                    loadFragment(new MeatFragment(), false);
+                    loadFragment(new Meat_Fragment(), false);
                 } else if (itemId == R.id.item_tokkboki) {
-                    loadFragment(new TokbokkiFragment(), false);
+                    loadFragment(new Tokbokki_Fragment(), false);
                 } else if (itemId == R.id.item_hotpot) {
-                    loadFragment(new HotpotFragment(), false);
+                    loadFragment(new Hotpot_Fragment(), false);
                 } else {
-                    loadFragment(new SnackFragment(), false);
+                    loadFragment(new Snack_Fragment(), false);
                 }
                 return true;
             }
         });
 
-        loadFragment(new MeatFragment(), true);
+        loadFragment(new Meat_Fragment(), true);
     }
 
     private void loadFragment(Fragment fragment, boolean isAppInitialized) {
+        // Tạo Bundle và truyền tableId vào Fragment
+        Bundle bundle = new Bundle();
+        bundle.putInt("TABLE_ID", tableId); // truyền tableId vào Bundle
+        fragment.setArguments(bundle); // gán Bundle cho Fragment
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        if(isAppInitialized) {
+        if (isAppInitialized) {
             fragmentTransaction.add(R.id.frameLayout, fragment);
         } else {
             fragmentTransaction.replace(R.id.frameLayout, fragment);
         }
-        fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
     }
 

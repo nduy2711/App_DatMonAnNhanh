@@ -1,6 +1,9 @@
 package com.example.nhom10.Model;
 
-public class Product {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Product implements Parcelable {
     private int menuItemId;   // Thuộc tính MenuItemID dạng int
     private int categoryIdFk; // Thuộc tính CategoryID (khóa ngoại) dạng int
     private String name;      // Tên món ăn
@@ -9,28 +12,64 @@ public class Product {
 
     // Constructor
     public Product(int menuItemId, int categoryIdFk, String name, String image, double price) {
-        this.menuItemId = menuItemId;  // Sử dụng kiểu int
-        this.categoryIdFk = categoryIdFk; // Sử dụng kiểu int
+        this.menuItemId = menuItemId;
+        this.categoryIdFk = categoryIdFk;
         this.name = name;
         this.image = image;
         this.price = price;
     }
 
+    // Parcelable constructor
+    protected Product(Parcel in) {
+        menuItemId = in.readInt();
+        categoryIdFk = in.readInt();
+        name = in.readString();
+        image = in.readString();
+        price = in.readDouble();
+    }
+
+    // Implement Parcelable methods
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(menuItemId);
+        dest.writeInt(categoryIdFk);
+        dest.writeString(name);
+        dest.writeString(image);
+        dest.writeDouble(price);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
+
     // Getter và Setter cho menuItemId
-    public int getMenuItemId() {  // Trả về kiểu int
+    public int getMenuItemId() {
         return menuItemId;
     }
 
-    public void setMenuItemId(int menuItemId) {  // Nhận vào kiểu int
+    public void setMenuItemId(int menuItemId) {
         this.menuItemId = menuItemId;
     }
 
     // Getter và Setter cho categoryIdFk
-    public int getCategoryIdFk() {  // Trả về kiểu int
+    public int getCategoryIdFk() {
         return categoryIdFk;
     }
 
-    public void setCategoryIdFk(int categoryIdFk) {  // Nhận vào kiểu int
+    public void setCategoryIdFk(int categoryIdFk) {
         this.categoryIdFk = categoryIdFk;
     }
 
