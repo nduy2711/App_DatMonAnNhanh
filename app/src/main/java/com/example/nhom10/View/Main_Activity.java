@@ -1,7 +1,9 @@
 package com.example.nhom10.View;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.nhom10.Control.ProductHandler;
 import com.example.nhom10.R;
 import com.google.android.material.navigation.NavigationView;
 
@@ -70,6 +73,7 @@ public class Main_Activity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Position corresponds to the table ID (position 0 -> table 1, etc.)
                 int tableId = position + 1;
+                Log.d("Main_Activity", "Table ID: " + tableId);
 
                 // Create intent to start Item_Activity
                 Intent intent = new Intent(Main_Activity.this, Item_Activity.class);
@@ -97,9 +101,11 @@ public class Main_Activity extends AppCompatActivity {
                 } else if (id == R.id.item_logout) {
                     // Xử lý đăng xuất nếu cần
                 }
+
                 drawerLayout.closeDrawers(); // Đóng Navigation Drawer sau khi nhấp
                 return true;
             }
         });
+
     }
 }

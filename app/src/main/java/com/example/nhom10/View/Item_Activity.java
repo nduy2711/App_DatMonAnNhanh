@@ -32,6 +32,8 @@ public class Item_Activity extends AppCompatActivity {
     NavigationView navigationView;
     FrameLayout frameLayout;
     BottomNavigationView bt_navigation;
+    int tableId; // Khai báo biến tableId
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,9 @@ public class Item_Activity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Nhận tableId từ Intent
+        tableId = getIntent().getIntExtra("TABLE_ID", -1);
 
         addControls();
 
@@ -70,17 +75,19 @@ public class Item_Activity extends AppCompatActivity {
                 int itemId = item.getItemId();
 
                 if (itemId == R.id.item_meat) {
-                    loadFragment(new MeatFragment(), false);
+                    loadFragment(new Meat_Fragment(), false);
                 } else if (itemId == R.id.item_tokkboki) {
-                    loadFragment(new TokbokkiFragment(), false);
+                    loadFragment(new Tokbokki_Fragment(), false);
                 } else if (itemId == R.id.item_hotpot) {
-                    loadFragment(new HotpotFragment(), false);
+                    loadFragment(new Hotpot_Fragment(), false);
                 } else {
-                    loadFragment(new SnackFragment(), false);
+                    loadFragment(new Snack_Fragment(), false);
                 }
                 return true;
             }
         });
+
+        loadFragment(new Meat_Fragment(), true);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -97,26 +104,27 @@ public class Item_Activity extends AppCompatActivity {
                 } else if (id == R.id.item_bill) {
                     startActivity(new Intent(Item_Activity.this, Bill_Activity.class));
                 } else if (id == R.id.item_logout) {
-                    // Xử lý đăng xuất nếu cần
                 }
-                drawerLayout.closeDrawers(); // Đóng Navigation Drawer sau khi nhấp
+                drawerLayout.closeDrawers();
                 return true;
             }
         });
-
-        loadFragment(new MeatFragment(), true);
     }
 
     private void loadFragment(Fragment fragment, boolean isAppInitialized) {
+        // Tạo Bundle và truyền tableId vào Fragment
+        Bundle bundle = new Bundle();
+        bundle.putInt("TABLE_ID", tableId); // truyền tableId vào Bundle
+        fragment.setArguments(bundle); // gán Bundle cho Fragment
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        if(isAppInitialized) {
+        if (isAppInitialized) {
             fragmentTransaction.add(R.id.frameLayout, fragment);
         } else {
             fragmentTransaction.replace(R.id.frameLayout, fragment);
         }
-        fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
     }
 

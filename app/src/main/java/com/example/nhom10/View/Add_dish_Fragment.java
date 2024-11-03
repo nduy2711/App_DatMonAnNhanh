@@ -2,7 +2,6 @@ package com.example.nhom10.View;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -10,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +19,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.nhom10.Control.DatabaseHandler;
-import com.example.nhom10.Control.ProductHandler;
 import com.example.nhom10.Model.Product;
 import com.example.nhom10.R;
-
-import java.util.ArrayList;
 
 public class Add_dish_Fragment extends DialogFragment {
 
@@ -105,14 +100,14 @@ public class Add_dish_Fragment extends DialogFragment {
              dbHelper.insertItem(new Product(newMenuItemID, categoryId, dishName, image, dishPrice));
             Toast.makeText(getContext(), "Món ăn đã được thêm thành công", Toast.LENGTH_SHORT).show();
              Fragment parentFragment = getParentFragment();
-             if (parentFragment instanceof MeatFragment) {
-                 ((MeatFragment) parentFragment).loadFragment(); // Reload MeatFragment
-             } else if (parentFragment instanceof TokbokkiFragment) {
-                 ((TokbokkiFragment) parentFragment).loadFragment(); // Reload TokbokkiFragment
-             } else if (parentFragment instanceof HotpotFragment) {
-                 ((HotpotFragment) parentFragment).loadFragment(); // Reload HotpotFragment
-             } else if (parentFragment instanceof SnackFragment) {
-                 ((SnackFragment) parentFragment).loadFragment(); // Reload SnackFragment
+             if (parentFragment instanceof Meat_Fragment) {
+                 ((Meat_Fragment) parentFragment).loadFragment(); // Reload MeatFragment
+             } else if (parentFragment instanceof Tokbokki_Fragment) {
+                 ((Tokbokki_Fragment) parentFragment).loadFragment(); // Reload TokbokkiFragment
+             } else if (parentFragment instanceof Hotpot_Fragment) {
+                 ((Hotpot_Fragment) parentFragment).loadFragment(); // Reload HotpotFragment
+             } else if (parentFragment instanceof Snack_Fragment) {
+                 ((Snack_Fragment) parentFragment).loadFragment(); // Reload SnackFragment
              }
             dismiss();
         });
