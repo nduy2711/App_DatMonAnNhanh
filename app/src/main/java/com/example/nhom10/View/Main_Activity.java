@@ -1,14 +1,15 @@
 package com.example.nhom10.View;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,7 +18,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.nhom10.Control.ProductHandler;
 import com.example.nhom10.R;
 import com.google.android.material.navigation.NavigationView;
 
@@ -77,6 +77,28 @@ public class Main_Activity extends AppCompatActivity {
 
                 // Start the new activity
                 startActivity(intent);
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                // Kiểm tra id của item và khởi động Activity tương ứng
+                if (id == R.id.item_info) {
+                    startActivity(new Intent(Main_Activity.this, InfoActivity.class));
+                } else if (id == R.id.item_statistical) {
+                    startActivity(new Intent(Main_Activity.this, StatisticalActivity.class));
+                } else if (id == R.id.item_book) {
+                    startActivity(new Intent(Main_Activity.this, BookActivity.class));
+                } else if (id == R.id.item_bill) {
+                    startActivity(new Intent(Main_Activity.this, Bill_Activity.class));
+                } else if (id == R.id.item_logout) {
+                    // Xử lý đăng xuất nếu cần
+                }
+                drawerLayout.closeDrawers(); // Đóng Navigation Drawer sau khi nhấp
+                return true;
             }
         });
     }

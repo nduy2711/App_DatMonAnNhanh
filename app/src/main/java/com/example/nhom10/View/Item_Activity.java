@@ -1,10 +1,9 @@
 package com.example.nhom10.View;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -17,14 +16,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 
-import com.example.nhom10.Control.LoginHandler;
-import com.example.nhom10.Control.ProductHandler;
-import com.example.nhom10.Model.Category;
-import com.example.nhom10.Model.Product;
 import com.example.nhom10.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -85,6 +78,28 @@ public class Item_Activity extends AppCompatActivity {
                 } else {
                     loadFragment(new SnackFragment(), false);
                 }
+                return true;
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                // Kiểm tra id của item và khởi động Activity tương ứng
+                if (id == R.id.item_info) {
+                    startActivity(new Intent(Item_Activity.this, InfoActivity.class));
+                } else if (id == R.id.item_statistical) {
+                    startActivity(new Intent(Item_Activity.this, StatisticalActivity.class));
+                } else if (id == R.id.item_book) {
+                    startActivity(new Intent(Item_Activity.this, BookActivity.class));
+                } else if (id == R.id.item_bill) {
+                    startActivity(new Intent(Item_Activity.this, Bill_Activity.class));
+                } else if (id == R.id.item_logout) {
+                    // Xử lý đăng xuất nếu cần
+                }
+                drawerLayout.closeDrawers(); // Đóng Navigation Drawer sau khi nhấp
                 return true;
             }
         });
