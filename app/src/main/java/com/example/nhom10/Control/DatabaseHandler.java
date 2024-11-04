@@ -93,7 +93,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "FOREIGN KEY (" + CATEGORY_ID_FK + ") REFERENCES " + CATEGORY_TABLE + "(" + CATEGORY_ID + "))";
 
         String CREATE_BILL_TABLE = "CREATE TABLE " + TABLE_BILL + " (" +
-                BILL_ID + " INTEGER PRIMARY KEY, " +
+                BILL_ID + " LONG PRIMARY KEY, " +
                 TABLE_ID + " INTEGER, " +
                 TOTAL_AMOUNT + " REAL, " +
                 FOOD_ITEM_NAME + " TEXT, " +
