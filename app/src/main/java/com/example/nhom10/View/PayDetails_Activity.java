@@ -3,7 +3,6 @@ package com.example.nhom10.View;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,7 +20,7 @@ import java.util.Calendar;
 
 public class PayDetails_Activity extends AppCompatActivity {
 
-    TextView textViewTable, textViewTotalAmount, textViewOrderId, textViewOrderDate, textViewTime;
+    TextView textViewTable, textViewTotalAmount, textViewOrderId, textViewOrderDate, textViewTime, textViewDishName;
     Button btnClose;
 
     @Override
@@ -41,13 +40,15 @@ public class PayDetails_Activity extends AppCompatActivity {
         textViewTotalAmount = findViewById(R.id.textViewTotalAmount);
         textViewOrderId = findViewById(R.id.textViewOrderId);
         textViewOrderDate = findViewById(R.id.textViewOrderDate);
-        textViewTime = findViewById(R.id.textViewOrderTime); // Thêm TextView để hiển thị thời gian
+        textViewTime = findViewById(R.id.textViewOrderTime);
+        textViewDishName = findViewById(R.id.textViewDishName); // Ánh xạ TextView tên món
         btnClose = findViewById(R.id.btn_Close);
 
         // Nhận dữ liệu từ Intent
         int tableId = getIntent().getIntExtra("TABLE_ID", -1);
         double totalPrice = getIntent().getDoubleExtra("TOTAL_PRICE", 0.0);
-        String orderId = getIntent().getStringExtra("ORDER_ID"); // Nhận mã đơn hàng từ Intent
+        String orderId = getIntent().getStringExtra("ORDER_ID");
+        String dishNames = getIntent().getStringExtra("DISH_NAME"); // Nhận tên món từ Intent
 
         // Hiển thị dữ liệu bàn và tổng tiền
         textViewTable.setText("Bàn: " + tableId);
@@ -66,6 +67,9 @@ public class PayDetails_Activity extends AppCompatActivity {
 
         // Hiển thị mã đơn hàng
         textViewOrderId.setText("Mã đơn hàng: " + orderId);
+
+        // Hiển thị tên món
+        textViewDishName.setText("Tên món: " + dishNames); // Hiển thị tên món
 
         // Đóng activity khi bấm nút "Đóng"
         btnClose.setOnClickListener(view -> finish());

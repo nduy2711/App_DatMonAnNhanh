@@ -129,9 +129,20 @@ public class Pay_Activty extends AppCompatActivity {
         String orderId = generateBillId(); // Tạo mã đơn hàng
         intent.putExtra("ORDER_ID", orderId); // Gửi mã đơn hàng vào Intent
 
+        // Chuyển đổi danh sách sản phẩm thành tên món
+        StringBuilder dishNames = new StringBuilder();
+        for (Product product : selectedProducts) {
+            if (dishNames.length() > 0) {
+                dishNames.append(", "); // Thêm dấu phẩy giữa các tên món
+            }
+            dishNames.append(product.getName()); // Giả sử Product có phương thức getName() để lấy tên món
+        }
+        intent.putExtra("DISH_NAME", dishNames.toString()); // Gửi tên món vào Intent
+
         intent.putParcelableArrayListExtra("SELECTED_PRODUCTS", selectedProducts);
         startActivity(intent);
     }
+
 
     private String getCurrentTime() {
         // Lấy thời gian hiện tại theo định dạng "HH:mm"
