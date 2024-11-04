@@ -109,7 +109,7 @@ public class Pay_Activty extends AppCompatActivity {
 
             // Tạo một hóa đơn mới cho mỗi sản phẩm đã chọn với thời gian và ngày thực tế
             Bill bill = new Bill(
-                    (int) Long.parseLong(idString), // Chuyển đổi chuỗi thành số nguyên
+                    Long.parseLong(idString), // Chuyển đổi chuỗi thành số nguyên
                     tableId,
                     totalPrice,
                     product.getName(),
@@ -120,7 +120,7 @@ public class Pay_Activty extends AppCompatActivity {
         }
     }
 
-    private void openPayDetailsActivity(int tableId, double totalPrice, ArrayList<Product> selectedProducts) {
+    private void openPayDetailsActivity(long tableId, double totalPrice, ArrayList<Product> selectedProducts) {
         Intent intent = new Intent(this, PayDetails_Activity.class);
         intent.putExtra("TABLE_ID", tableId);
         intent.putExtra("TOTAL_PRICE", totalPrice);
@@ -164,10 +164,11 @@ public class Pay_Activty extends AppCompatActivity {
         int second = calendar.get(Calendar.SECOND); // Lấy giây (0-59)
         int day = calendar.get(Calendar.DAY_OF_MONTH); // Lấy ngày (1-31)
         int month = calendar.get(Calendar.MONTH) + 1; // Lấy tháng (0-11, thêm 1)
-        int year = calendar.get(Calendar.YEAR); // Lấy năm
+        int year = calendar.get(Calendar.YEAR) % 100; // Lấy 2 chữ số cuối của năm
 
-        // Định dạng ID: HHmmssddMMyyyy
-        return String.format("%02d%02d%02d%02d%02d%04d", hour, minute, second, day, month, year);
+        // Định dạng ID: HHmmssddMMyy
+        return String.format("%02d%02d%02d%02d%02d%02d", hour, minute, second, day, month, year);
     }
+
 
 }

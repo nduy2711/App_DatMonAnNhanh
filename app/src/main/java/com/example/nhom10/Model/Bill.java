@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Bill {
-    private int billId; // ID của hóa đơn
+    private long billId; // ID của hóa đơn
     private int tableId; // ID của bàn
     private double totalAmount; // Tổng số tiền
     private String foodItemName; // Tên món ăn
@@ -12,7 +12,7 @@ public class Bill {
     private String date; // Ngày
 
     // Constructor
-    public Bill(int billId, int tableId, double totalAmount, String foodItemName, String time, String date) {
+    public Bill(long billId, int tableId, double totalAmount, String foodItemName, String time, String date) {
         this.billId = billId;
         this.tableId = tableId;
         this.totalAmount = totalAmount;
@@ -47,7 +47,7 @@ public class Bill {
     };
 
     // Getter và Setter cho billId
-    public int getBillId() {
+    public long getBillId() {
         return billId;
     }
 
