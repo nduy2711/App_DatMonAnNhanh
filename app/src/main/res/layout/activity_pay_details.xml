@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F2F2"
+    tools:context=".View.PayDetails_Activity">
+
+    <!-- Hình ảnh đại diện đơn hàng -->
+    <ImageView
+        android:id="@+id/img_Avatar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/logo_xitrum"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Tiêu đề "Chi tiết đơn hàng" -->
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chi tiết đơn hàng"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/img_Avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Mã đơn hàng -->
+    <TextView
+        android:id="@+id/textViewOrderId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mã đơn hàng: 200851190924"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Ngày đặt hàng -->
+    <TextView
+        android:id="@+id/textViewOrderDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ngày đặt hàng: 19/09/2024"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/textViewOrderId"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Thời gian đặt hàng -->
+    <TextView
+        android:id="@+id/textViewOrderTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thời gian đặt hàng: 12:00"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/textViewOrderDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Tên món -->
+    <TextView
+        android:id="@+id/textViewDishName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tên món: Ba rọi"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/textViewOrderTime"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Bàn -->
+    <TextView
+        android:id="@+id/textViewTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bàn: 1"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/textViewDishName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Phương thức thanh toán -->
+    <TextView
+        android:id="@+id/textViewPaymentMethod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phương thức thanh toán: Tiền mặt"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toBottomOf="@id/textViewTable"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Tổng tiền -->
+    <TextView
+        android:id="@+id/textViewTotalAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tổng tiền: 80.000 VNĐ"
+        android:textSize="16sp"
+        android:textColor="#FF0000"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/textViewPaymentMethod"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Nút Đóng -->
+    <Button
+        android:id="@+id/btn_Close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ĐÓNG"
+        android:backgroundTint="#D32F2F"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewTotalAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

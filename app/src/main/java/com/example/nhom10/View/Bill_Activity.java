@@ -115,8 +115,7 @@ public class Bill_Activity extends AppCompatActivity {
 
         // Get all bills from database
         // Assuming you have a method to get all bills in your DatabaseHandler
-        billList = databaseHandler.getAllBills(); // Implement this method in DatabaseHandler
-
+//        billList = databaseHandler.getAllBills(); // Implement this method in DatabaseHandler
         // Setup RecyclerView
         billAdapter = new BillAdapter(billList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
