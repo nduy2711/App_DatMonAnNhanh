@@ -1,4 +1,4 @@
-<!-- item_bill.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -6,35 +6,25 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/textViewBillId"
+        android:id="@+id/textBillId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bill ID"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/textViewFoodItemName"
+        android:id="@+id/textTotalAmount"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Food Item Name" />
+        android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/textViewTotalAmount"
+        android:id="@+id/textDate"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total Amount" />
+        android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/textViewDate"
+        android:id="@+id/textTime"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Date" />
-
-    <TextView
-        android:id="@+id/textViewTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time" />
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

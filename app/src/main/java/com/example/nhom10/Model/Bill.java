@@ -3,7 +3,7 @@ package com.example.nhom10.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Bill implements Parcelable {
+public class Bill {
     private int billId; // ID của hóa đơn
     private int tableId; // ID của bàn
     private double totalAmount; // Tổng số tiền
@@ -21,6 +21,9 @@ public class Bill implements Parcelable {
         this.date = date;
     }
 
+    public Bill() {}
+
+
     // Parcelable constructor
     protected Bill(Parcel in) {
         billId = in.readInt();
@@ -31,23 +34,7 @@ public class Bill implements Parcelable {
         date = in.readString();
     }
 
-    // Implement Parcelable methods
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(billId);
-        dest.writeInt(tableId);
-        dest.writeDouble(totalAmount);
-        dest.writeString(foodItemName);
-        dest.writeString(time);
-        dest.writeString(date);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Bill> CREATOR = new Creator<Bill>() {
+    public static final Parcelable.Creator<Bill> CREATOR = new Parcelable.Creator<Bill>() {
         @Override
         public Bill createFromParcel(Parcel in) {
             return new Bill(in);
