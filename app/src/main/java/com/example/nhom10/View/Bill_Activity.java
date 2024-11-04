@@ -23,7 +23,10 @@ import com.example.nhom10.R;
 import com.example.nhom10.Control.DatabaseHandler;
 import com.google.android.material.navigation.NavigationView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Bill_Activity extends AppCompatActivity {
@@ -75,7 +78,7 @@ public class Bill_Activity extends AppCompatActivity {
         billAdapter = new BillAdapter(billList);
         recyclerView.setAdapter(billAdapter);
 
-        // Load initial data
+        // Load initial data for today
         loadBillsForToday();
 
         // Handle Spinner selections to load data for selected month and year
@@ -101,10 +104,16 @@ public class Bill_Activity extends AppCompatActivity {
     }
 
     private void loadBillsForToday() {
-        String today = "2024-11-01"; // Cần lấy ngày hiện tại thay cho giá trị cứng này
+        // Lấy ngày và năm hiện tại
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1; // Tháng trong Calendar là 0-11
+        int year = calendar.get(Calendar.YEAR);
+
+        // Gọi phương thức với tháng và năm
         DatabaseHandler dbHandler = new DatabaseHandler(this);
         billList.clear();
-        billList.addAll(dbHandler.getBillsForDate(today));
+        billList.addAll(dbHandler.getBillsForMonthYear(month, year));
         billAdapter.notifyDataSetChanged();
     }
 
@@ -112,14 +121,19 @@ public class Bill_Activity extends AppCompatActivity {
         String selectedMonth = spinnerMonth.getSelectedItem().toString();
         String selectedYear = spinnerYear.getSelectedItem().toString();
         if (!selectedMonth.equals("Chọn Tháng") && !selectedYear.equals("Chọn Năm")) {
-            String date = selectedYear + "-" + selectedMonth + "-01"; // Ví dụ đơn giản, có thể thay đổi để lấy ngày cụ thể
+            // Chuyển đổi tháng và năm thành số nguyên
+            int month = Integer.parseInt(selectedMonth);
+            int year = Integer.parseInt(selectedYear);
+
+            // Gọi phương thức lấy hóa đơn theo tháng và năm
             DatabaseHandler dbHandler = new DatabaseHandler(this);
             billList.clear();
-            billList.addAll(dbHandler.getBillsForDate(date));
+            billList.addAll(dbHandler.getBillsForMonthYear(month, year));
             billAdapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(this, "Vui lòng chọn tháng và năm hợp lệ.", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     void addEvents() {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -137,6 +151,7 @@ public class Bill_Activity extends AppCompatActivity {
                 } else if (id == R.id.item_bill) {
                     startActivity(new Intent(Bill_Activity.this, Bill_Activity.class));
                 } else if (id == R.id.item_logout) {
+                    // Thêm mã để xử lý đăng xuất nếu cần
                 }
                 drawerLayout.closeDrawers();
                 return true;

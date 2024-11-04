@@ -256,10 +256,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return maxId;
     }
 
-    public List<Bill> getBillsForDate(String date) {
+    public List<Bill> getBillsForMonthYear(int month, int year) {
         List<Bill> bills = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BILL + " WHERE " + DATE + "=?", new String[]{date});
+
+        // Sử dụng cú pháp SQL để tìm các hóa đơn trong tháng và năm cụ thể
+        String query = "SELECT * FROM " + TABLE_BILL + " WHERE strftime('%m', " + DATE + ") = ? AND strftime('%Y', " + DATE + ") = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.format("%02d", month), String.valueOf(year)});
 
         if (cursor.moveToFirst()) {
             do {
@@ -278,5 +281,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         return bills;
     }
+
+
 
 }
