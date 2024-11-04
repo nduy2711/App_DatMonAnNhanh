@@ -18,9 +18,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.nhom10.Control.DatabaseHandler;
 import com.example.nhom10.Model.Bill;
 import com.example.nhom10.R;
+import com.example.nhom10.Control.DatabaseHandler;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class Bill_Activity extends AppCompatActivity {
     private Spinner spinnerMonth, spinnerYear;
     private RecyclerView recyclerView;
     private BillAdapter billAdapter;
-    private List<Bill> billList;
+    private List<Bill> billList = new ArrayList<>();
 
     DrawerLayout drawerLayout;
     Toolbar toolbar;
@@ -51,7 +51,6 @@ public class Bill_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_bill);
 
         addControls();
-
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav);
         drawerLayout.addDrawerListener(toggle);
@@ -62,66 +61,65 @@ public class Bill_Activity extends AppCompatActivity {
         spinnerMonth = findViewById(R.id.spinnerMonth);
         spinnerYear = findViewById(R.id.spinnerYear);
 
-        // Set up Month Spinner
-        ArrayAdapter<CharSequence> monthAdapter = ArrayAdapter.createFromResource(this,
-                R.array.months, android.R.layout.simple_spinner_item);
+        // Set up Month and Year Spinners
+        ArrayAdapter<CharSequence> monthAdapter = ArrayAdapter.createFromResource(this, R.array.months, android.R.layout.simple_spinner_item);
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMonth.setAdapter(monthAdapter);
 
-        // Set up Year Spinner
-        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
-                R.array.years, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this, R.array.years, android.R.layout.simple_spinner_item);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerYear.setAdapter(yearAdapter);
 
-        loadBills();
+        // Setup RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        billAdapter = new BillAdapter(billList);
+        recyclerView.setAdapter(billAdapter);
 
-        // Handle Month Spinner selection
+        // Load initial data
+        loadBillsForToday();
+
+        // Handle Spinner selections to load data for selected month and year
         spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedMonth = parent.getItemAtPosition(position).toString();
-                if (!selectedMonth.equals("Chọn Tháng")) {
-                    Toast.makeText(Bill_Activity.this, "Tháng được chọn: " + selectedMonth, Toast.LENGTH_SHORT).show();
-                }
+                loadBillsForSelectedDate();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // No action needed
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // Handle Year Spinner selection
         spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedYear = parent.getItemAtPosition(position).toString();
-                if (!selectedYear.equals("Chọn Năm")) {
-                    Toast.makeText(Bill_Activity.this, "Năm được chọn: " + selectedYear, Toast.LENGTH_SHORT).show();
-                }
+                loadBillsForSelectedDate();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // No action needed
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
-    void loadBills() {
-        DatabaseHandler databaseHandler = new DatabaseHandler(this);
-        billList = new ArrayList<>();
-
-        // Get all bills from database
-        // Assuming you have a method to get all bills in your DatabaseHandler
-        billList = databaseHandler.getAllBills(); // Implement this method in DatabaseHandler
-
-        // Setup RecyclerView
-        billAdapter = new BillAdapter(billList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(billAdapter);
+    private void loadBillsForToday() {
+        String today = "2024-11-01"; // Cần lấy ngày hiện tại thay cho giá trị cứng này
+        DatabaseHandler dbHandler = new DatabaseHandler(this);
+        billList.clear();
+        billList.addAll(dbHandler.getBillsForDate(today));
+        billAdapter.notifyDataSetChanged();
     }
+
+    private void loadBillsForSelectedDate() {
+        String selectedMonth = spinnerMonth.getSelectedItem().toString();
+        String selectedYear = spinnerYear.getSelectedItem().toString();
+        if (!selectedMonth.equals("Chọn Tháng") && !selectedYear.equals("Chọn Năm")) {
+            String date = selectedYear + "-" + selectedMonth + "-01"; // Ví dụ đơn giản, có thể thay đổi để lấy ngày cụ thể
+            DatabaseHandler dbHandler = new DatabaseHandler(this);
+            billList.clear();
+            billList.addAll(dbHandler.getBillsForDate(date));
+            billAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     void addEvents() {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -144,6 +142,5 @@ public class Bill_Activity extends AppCompatActivity {
                 return true;
             }
         });
-
     }
 }

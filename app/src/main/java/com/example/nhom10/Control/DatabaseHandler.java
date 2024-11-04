@@ -226,16 +226,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         insertBill(new Bill(1, 1, 100000, "Ba rọi", "12:00", "2024-11-01"));
 
         // Bill for Table 2 handled by Employee 2 for Item 5 (Tokbokki truyền thống)
-        insertBill(new Bill(2, 5, 90000, "Tokbokki truyền thống", "13:00", "2024-11-01"));
+        insertBill(new Bill(2, 5, 90000, "Tokbokki truyền thống", "13:00", "2024-10-01"));
 
         // Bill for Table 3 handled by Employee 1 for Item 9 (Lẩu bò)
-        insertBill(new Bill(3, 9, 200000, "Lẩu bò", "19:00", "2024-11-01"));
+        insertBill(new Bill(3, 9, 200000, "Lẩu bò", "19:00", "2024-10-01"));
 
         // Bill for Table 4 handled by Employee 2 for Item 13 (Chả cá hàn quốc)
         insertBill(new Bill(4, 13, 50000, "Chả cá hàn quốc","20:00", "2024-11-02"));
 
         // Additional sample bills
-        insertBill(new Bill(5, 6, 95000, "Tokbokki sốt cay",  "18:30", "2024-11-03"));
+        insertBill(new Bill(5, 6, 95000, "Tokbokki sốt cay",  "18:30", "2024-10-03"));
         insertBill(new Bill(6, 12, 220000, "Lẩu tokbokki",  "19:00", "2024-11-03"));
         insertBill(new Bill(7, 14, 45000, "Bánh mì trung quốc",  "15:00", "2024-11-04"));
         insertBill(new Bill(8, 16, 60000, "Dòi hàn quốc",  "17:45", "2024-11-05"));
@@ -256,28 +256,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return maxId;
     }
 
-//    public List<Bill> getAllBills() {
-//        List<Bill> billList = new ArrayList<>();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BILL, null);
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                // Sửa đổi để sử dụng getColumnIndex đúng cách
-//                int billId = cursor.getInt(cursor.getColumnIndex(BILL_ID));
-//                int tableId = cursor.getInt(cursor.getColumnIndex(TABLE_ID));
-//                double totalAmount = cursor.getDouble(cursor.getColumnIndex(TOTAL_AMOUNT));
-//                String foodItemName = cursor.getString(cursor.getColumnIndex(FOOD_ITEM_NAME));
-//                String time = cursor.getString(cursor.getColumnIndex(TIME));
-//                String date = cursor.getString(cursor.getColumnIndex(DATE));
-//
-//                // Tạo đối tượng Bill và thêm vào danh sách
-//                Bill bill = new Bill(billId, tableId, totalAmount, foodItemName, time, date);
-//                billList.add(bill);
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//        return billList;
-//    }
+    public List<Bill> getBillsForDate(String date) {
+        List<Bill> bills = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_BILL + " WHERE " + DATE + "=?", new String[]{date});
+
+        if (cursor.moveToFirst()) {
+            do {
+                int billId = cursor.getInt(cursor.getColumnIndexOrThrow(BILL_ID));
+                int tableId = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_ID));
+                double totalAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(TOTAL_AMOUNT));
+                String foodItemName = cursor.getString(cursor.getColumnIndexOrThrow(FOOD_ITEM_NAME));
+                String time = cursor.getString(cursor.getColumnIndexOrThrow(TIME));
+                String dateValue = cursor.getString(cursor.getColumnIndexOrThrow(DATE));
+
+                Bill bill = new Bill(billId, tableId, totalAmount, foodItemName, time, dateValue);
+                bills.add(bill);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return bills;
+    }
 
 }
