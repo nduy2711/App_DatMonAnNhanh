@@ -120,7 +120,7 @@ public class Pay_Activty extends AppCompatActivity {
         }
     }
 
-    private void openPayDetailsActivity(long tableId, double totalPrice, ArrayList<Product> selectedProducts) {
+    private void openPayDetailsActivity(int tableId, double totalPrice, ArrayList<Product> selectedProducts) {
         Intent intent = new Intent(this, PayDetails_Activity.class);
         intent.putExtra("TABLE_ID", tableId);
         intent.putExtra("TOTAL_PRICE", totalPrice);
@@ -164,11 +164,9 @@ public class Pay_Activty extends AppCompatActivity {
         int second = calendar.get(Calendar.SECOND); // Lấy giây (0-59)
         int day = calendar.get(Calendar.DAY_OF_MONTH); // Lấy ngày (1-31)
         int month = calendar.get(Calendar.MONTH) + 1; // Lấy tháng (0-11, thêm 1)
-        int year = calendar.get(Calendar.YEAR) % 100; // Lấy 2 chữ số cuối của năm
 
-        // Định dạng ID: HHmmssddMMyy
-        return String.format("%02d%02d%02d%02d%02d%02d", hour, minute, second, day, month, year);
+        // Định dạng ID: HHmmssddMM (không bao gồm năm)
+        return String.format("%02d%02d%02d%02d%02d", hour, minute, second, day, month);
     }
-
 
 }

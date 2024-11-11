@@ -1,0 +1,47 @@
+<!-- res/layout/activity_dish_management.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/main"
+    android:padding="16dp">
+
+    <!-- Title TextView -->
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quản lý Món ăn"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:paddingBottom="8dp" />
+
+    <!-- Add Dish Button -->
+    <Button
+        android:id="@+id/add_dish_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thêm món ăn"
+        android:layout_gravity="end"
+        android:padding="8dp"
+        android:backgroundTint="#3F51B5"
+        android:textColor="@android:color/white" />
+
+    <!-- ChooseBox Spinner for selecting dish type -->
+    <Spinner
+        android:id="@+id/dish_type_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        android:padding="8dp"
+        android:background="?android:attr/selectableItemBackground" />
+
+    <!-- ListView for displaying dishes -->
+    <ListView
+        android:id="@+id/dish_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

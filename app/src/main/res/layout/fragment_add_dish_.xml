@@ -72,6 +72,12 @@
         android:padding="10dp"
         android:layout_marginBottom="16dp" />
 
+    <Spinner
+        android:id="@+id/category_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
     <!-- Nút thêm -->
     <Button
         android:id="@+id/add_dish_button"

@@ -19,6 +19,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.nhom10.Control.ProductHandler;
 import com.example.nhom10.R;
@@ -29,11 +32,8 @@ public class Main_Activity extends AppCompatActivity {
     Toolbar toolbar;
     NavigationView navigationView;
     FrameLayout frameLayout;
-    GridView tableGridView;
-
-    int [] images = {R.drawable.table1, R.drawable.table2, R.drawable.table3, R.drawable.table4, R.drawable.table5, R.drawable.table6,
-            R.drawable.table7, R.drawable.table8, R.drawable.table9, R.drawable.table10, R.drawable.table11, R.drawable.table12,
-            R.drawable.table13, R.drawable.table14, R.drawable.table15, R.drawable.table16, R.drawable.table17, R.drawable.table18,};
+    ViewPager viewPager;
+    RecyclerView recyclerView1, recyclerView2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +54,22 @@ public class Main_Activity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        TableGridAdapter adapter = new TableGridAdapter(this, images);
-        tableGridView.setAdapter(adapter);
+        ViewPager viewPager = findViewById(R.id.viewPager);
+        int[] imageIds = {R.drawable.tokbokkitruyenthong, R.drawable.chacahanquoc, R.drawable.bachibocuon};  // Thay các hình ảnh của bạn vào đây
+        PhotoPagerAdapter adapter = new PhotoPagerAdapter(this, imageIds);
+        viewPager.setAdapter(adapter);
+
+        recyclerView1.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        int[] imageIds1 = {R.drawable.bachibocuon, R.drawable.tokbokkichienxu, R.drawable.launam, R.drawable.doihanquoc}; // Hình ảnh cho RecyclerView 1
+        String[] imageNames1 = {"Thịt nướng", "Tokbokki", "Lẩu", "Ăn vặt"};
+        ImageAdapter adapter1 = new ImageAdapter(this, imageIds1, imageNames1);
+        recyclerView1.setAdapter(adapter1);
+
+        recyclerView2.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        int[] imageIds2 = {R.drawable.laubo, R.drawable.laukimchi}; // Hình ảnh cho RecyclerView 2
+        String[] imageNames2 = {"Lẩu bò", "Lẩu kim chi"};
+        ImageAdapter adapter2 = new ImageAdapter(this, imageIds2, imageNames2);
+        recyclerView2.setAdapter(adapter2);
 
     }
 
@@ -64,25 +78,12 @@ public class Main_Activity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigationView = (NavigationView) findViewById(R.id.navigationView);
-        tableGridView = (GridView) findViewById(R.id.table_gridView);
+        viewPager = findViewById(R.id.viewPager);
+        recyclerView1 = findViewById(R.id.recyclerCategories);
+        recyclerView2 = findViewById(R.id.recyclerProducts);
     }
 
     void addEvents() {
-        tableGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Position corresponds to the table ID (position 0 -> table 1, etc.)
-                int tableId = position + 1;
-                Log.d("Main_Activity", "Table ID: " + tableId);
-
-                // Create intent to start Item_Activity
-                Intent intent = new Intent(Main_Activity.this, Item_Activity.class);
-                intent.putExtra("TABLE_ID", tableId);
-
-                // Start the new activity
-                startActivity(intent);
-            }
-        });
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -100,6 +101,13 @@ public class Main_Activity extends AppCompatActivity {
                     startActivity(new Intent(Main_Activity.this, Bill_Activity.class));
                 } else if (id == R.id.item_logout) {
                     // Xử lý đăng xuất nếu cần
+                } else if (id == R.id.item_dish_management) {
+                    startActivity(new Intent(Main_Activity.this, Dish_Management_Activity.class));
+                } else if (id == R.id.item_order) {
+                    // Start Item_Activity to load the Order fragment
+                    Intent intent = new Intent(Main_Activity.this, Item_Activity.class);
+                    intent.putExtra("load_order_fragment", true); // Set flag to load order fragment
+                    startActivity(intent);
                 }
 
                 drawerLayout.closeDrawers(); // Đóng Navigation Drawer sau khi nhấp

@@ -112,10 +112,6 @@ public class Tokbokki_Fragment extends Fragment {
         orderAdapter = new OrderAdapter(getContext(), selectedProducts);
         listView.setAdapter(orderAdapter);
 
-        addDishButton.setOnClickListener(v -> {
-            showAddDishFragment();
-        });
-
         // GridView item click listener
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -174,11 +170,6 @@ public class Tokbokki_Fragment extends Fragment {
         // Refresh the order ListView and total price
         orderAdapter.notifyDataSetChanged();
         totalPriceTextView.setText("Tổng cộng: " + totalPrice + " VND");
-    }
-
-    private void showAddDishFragment() {
-        Add_dish_Fragment addDishFragment = Add_dish_Fragment.newInstance(2); // Truyền categoryId của MeatFragment là 1
-        addDishFragment.show(getParentFragmentManager(), "add_dish_fragment");
     }
 
     public void loadFragment() {

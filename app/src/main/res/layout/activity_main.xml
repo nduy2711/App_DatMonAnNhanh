@@ -7,48 +7,78 @@
     android:layout_height="match_parent"
     tools:context=".View.Main_Activity">
 
-
+    <!-- Main content area -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- Toolbar -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme" />
+            android:theme="?attr/actionBarTheme"
+            app:title="Trang chủ bán hàng"
+            android:layout_marginTop="20dp"
+            app:titleTextColor="@android:color/white" />
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
+        <!-- Image Slider / Banner -->
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
+            android:layout_height="200dp"
+            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-            <GridView
-                android:id="@+id/table_gridView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:numColumns="3"
-                android:verticalSpacing="10dp"
-                android:horizontalSpacing="10dp"
-                android:gravity="center"
-                />
-        </FrameLayout>
+        <!-- Categories Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:text="Danh mục sản phẩm"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-medium" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal" />
+
+        <!-- Product List Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Sản phẩm nổi bật"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-medium" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerProducts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
     </LinearLayout>
 
+    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu" />
-    </androidx.drawerlayout.widget.DrawerLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>

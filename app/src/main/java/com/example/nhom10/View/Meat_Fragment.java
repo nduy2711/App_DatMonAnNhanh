@@ -96,9 +96,6 @@ public class Meat_Fragment extends Fragment {
             }
         });
 
-        addDishButton.setOnClickListener(v -> {
-            showAddDishFragment();
-        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -142,10 +139,6 @@ public class Meat_Fragment extends Fragment {
         totalPriceTextView.setText("Tổng cộng: " + totalPrice + " VND");
     }
 
-    private void showAddDishFragment() {
-        Add_dish_Fragment addDishFragment = Add_dish_Fragment.newInstance(1); // Truyền categoryId của MeatFragment là 1
-        addDishFragment.show(getParentFragmentManager(), "add_dish_fragment");
-    }
 
     public void loadFragment() {
         ArrayList<Product> updatedMeatProducts = productHandler.getProductsByCategory(1);

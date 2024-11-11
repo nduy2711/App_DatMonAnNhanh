@@ -189,56 +189,64 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Check if a specific table is empty
+    private boolean isTableEmpty(String tableName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName, null);
+        cursor.moveToFirst();
+        boolean isEmpty = cursor.getInt(0) == 0;
+        cursor.close();
+        db.close();
+        return isEmpty;
+    }
 
+
+    // Initialize data only if tables are empty
     public void initData() {
-        insertEmployee(new Employee(1, "nhanvien1", "123", "Nguyễn Công Phượng", "congphuong@gmail.com", "012356789", "CCCD123"));
-        insertEmployee(new Employee(2, "nhanvien2", "123", "Nguyễn Tiến Linh", "tienlinh@gmail.com", "1234556788", "CCCD456"));
+        if (isTableEmpty(EMPLOYEE_TABLE)) {
+            insertEmployee(new Employee(1, "nhanvien1", "123", "Nguyễn Công Phượng", "congphuong@gmail.com", "012356789", "CCCD123"));
+            insertEmployee(new Employee(2, "nhanvien2", "123", "Nguyễn Tiến Linh", "tienlinh@gmail.com", "1234556788", "CCCD456"));
+        }
 
-        insertCategory(new Category(1, "Thịt nướng"));
-        insertCategory(new Category(2, "Tokbokki"));
-        insertCategory(new Category(3, "Lẩu"));
-        insertCategory(new Category(4, "Ăn vặt"));
+        if (isTableEmpty(CATEGORY_TABLE)) {
+            insertCategory(new Category(1, "Thịt nướng"));
+            insertCategory(new Category(2, "Tokbokki"));
+            insertCategory(new Category(3, "Lẩu"));
+            insertCategory(new Category(4, "Ăn vặt"));
+        }
 
-        // Sample image paths or URLs
-        insertItem(new Product(1, 1, "Ba rọi", "baroi", 100000));
-        insertItem(new Product(2, 1, "Ba chỉ bò", "bachibo", 120000));
-        insertItem(new Product(3, 1, "Thăng bò", "thangbo", 130000));
-        insertItem(new Product(4, 1, "Ba chỉ cuộn nấm", "bachibocuon", 140000));
+        if (isTableEmpty(MENU_ITEM_TABLE)) {
+            insertItem(new Product(1, 1, "Ba rọi", "baroi", 100000));
+            insertItem(new Product(2, 1, "Ba chỉ bò", "bachibo", 120000));
+            insertItem(new Product(3, 1, "Thăng bò", "thangbo", 130000));
+            insertItem(new Product(4, 1, "Ba chỉ cuộn nấm", "bachibocuon", 140000));
 
-        // Thêm sản phẩm cho danh mục "C002" - Tokbokki
-        insertItem(new Product(5, 2, "Tokbokki truyền thống", "tokbokkitruyenthong", 90000));
-        insertItem(new Product(6, 2, "Tokbokki sốt cay", "tokbokkisotcay", 95000));
-        insertItem(new Product(7, 2, "Tokbokki sốt phô mai", "tokbokkisotphomai", 85000));
-        insertItem(new Product(8, 2, "Tokbokki chiên", "tokbokkichienxu", 100000));
+            insertItem(new Product(5, 2, "Tokbokki truyền thống", "tokbokkitruyenthong", 90000));
+            insertItem(new Product(6, 2, "Tokbokki sốt cay", "tokbokkisotcay", 95000));
+            insertItem(new Product(7, 2, "Tokbokki sốt phô mai", "tokbokkisotphomai", 85000));
+            insertItem(new Product(8, 2, "Tokbokki chiên", "tokbokkichienxu", 100000));
 
-        // Thêm sản phẩm cho danh mục "C003" - Lẩu
-        insertItem(new Product(9, 3, "Lẩu bò", "laubo", 200000));
-        insertItem(new Product(10, 3, "Lẩu kim chi", "laukimchi", 190000));
-        insertItem(new Product(11, 3, "Lẩu nấm", "launam", 210000));
-        insertItem(new Product(12, 3, "Lẩu tokbokki", "lautokbokki", 220000));
+            insertItem(new Product(9, 3, "Lẩu bò", "laubo", 200000));
+            insertItem(new Product(10, 3, "Lẩu kim chi", "laukimchi", 190000));
+            insertItem(new Product(11, 3, "Lẩu nấm", "launam", 210000));
+            insertItem(new Product(12, 3, "Lẩu tokbokki", "lautokbokki", 220000));
 
-        // Thêm sản phẩm cho danh mục "C004" - Ăn vặt
-        insertItem(new Product(13, 4, "Chả cá hàn quốc", "chacahanquoc", 50000));
-        insertItem(new Product(14, 4, "Bánh mì trung quốc", "banhmitrunghanquoc", 45000));
-        insertItem(new Product(15, 4, "Manbu", "manbu", 55000));
-        insertItem(new Product(16, 4, "Dòi hàn quốc", "doihanquoc", 60000));
+            insertItem(new Product(13, 4, "Chả cá hàn quốc", "chacahanquoc", 50000));
+            insertItem(new Product(14, 4, "Bánh mì trung quốc", "banhmitrunghanquoc", 45000));
+            insertItem(new Product(15, 4, "Manbu", "manbu", 55000));
+            insertItem(new Product(16, 4, "Dòi hàn quốc", "doihanquoc", 60000));
+        }
 
-        insertBill(new Bill(1, 1, 100000, "Ba rọi", "12:00", "2024-11-01"));
-
-        // Bill for Table 2 handled by Employee 2 for Item 5 (Tokbokki truyền thống)
-        insertBill(new Bill(2, 5, 90000, "Tokbokki truyền thống", "13:00", "2024-10-01"));
-
-        // Bill for Table 3 handled by Employee 1 for Item 9 (Lẩu bò)
-        insertBill(new Bill(3, 9, 200000, "Lẩu bò", "19:00", "2024-10-01"));
-
-        // Bill for Table 4 handled by Employee 2 for Item 13 (Chả cá hàn quốc)
-        insertBill(new Bill(4, 13, 50000, "Chả cá hàn quốc","20:00", "2024-11-02"));
-
-        // Additional sample bills
-        insertBill(new Bill(5, 6, 95000, "Tokbokki sốt cay",  "18:30", "2024-10-03"));
-        insertBill(new Bill(6, 12, 220000, "Lẩu tokbokki",  "19:00", "2024-11-03"));
-        insertBill(new Bill(7, 14, 45000, "Bánh mì trung quốc",  "15:00", "2024-11-04"));
-        insertBill(new Bill(8, 16, 60000, "Dòi hàn quốc",  "17:45", "2024-11-05"));
+        if (isTableEmpty(TABLE_BILL)) {
+            insertBill(new Bill(1, 1, 100000, "Ba rọi", "12:00", "2024-11-01"));
+            insertBill(new Bill(2, 5, 90000, "Tokbokki truyền thống", "13:00", "2024-10-01"));
+            insertBill(new Bill(3, 9, 200000, "Lẩu bò", "19:00", "2024-10-01"));
+            insertBill(new Bill(4, 13, 50000, "Chả cá hàn quốc", "20:00", "2024-11-02"));
+            insertBill(new Bill(5, 6, 95000, "Tokbokki sốt cay", "18:30", "2024-10-03"));
+            insertBill(new Bill(6, 12, 220000, "Lẩu tokbokki", "19:00", "2024-11-03"));
+            insertBill(new Bill(7, 14, 45000, "Bánh mì trung quốc", "15:00", "2024-11-04"));
+            insertBill(new Bill(8, 16, 60000, "Dòi hàn quốc", "17:45", "2024-11-05"));
+        }
     }
 
     public SQLiteDatabase open() {

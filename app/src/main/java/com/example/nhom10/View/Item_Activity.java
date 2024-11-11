@@ -45,9 +45,9 @@ public class Item_Activity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        // Nhận tableId từ Intent
-        tableId = getIntent().getIntExtra("TABLE_ID", -1);
+        // Check if we need to load the Order fragment
+        boolean loadOrderFragment = getIntent().getBooleanExtra("load_order_fragment", false);
+        loadFragment(new Meat_Fragment(), true); // Default fragment
 
         addControls();
 
@@ -113,10 +113,6 @@ public class Item_Activity extends AppCompatActivity {
 
     private void loadFragment(Fragment fragment, boolean isAppInitialized) {
         // Tạo Bundle và truyền tableId vào Fragment
-        Bundle bundle = new Bundle();
-        bundle.putInt("TABLE_ID", tableId); // truyền tableId vào Bundle
-        fragment.setArguments(bundle); // gán Bundle cho Fragment
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
