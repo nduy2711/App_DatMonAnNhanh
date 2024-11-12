@@ -46,11 +46,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String TABLE_BILL = "Bill";
     private static final String BILL_ID = "BillID"; // ID của hóa đơn
-    private static final String TABLE_ID = "TableID"; // ID của bàn
     private static final String TOTAL_AMOUNT = "TotalAmount"; // Tổng số tiền
     private static final String FOOD_ITEM_NAME = "FoodItemName"; // Tên món ăn
     private static final String TIME = "Time"; // Thời gian
     private static final String DATE = "Date"; // Ngày
+
+    private static final String BILL_ITEM_TABLE = "Bill_Item";
+    private static final String BILL_ITEM_ID = "BillItemID";
+    private static final String BILL_ID_FK = "BillID";
+    private static final String MENU_ITEM_ID_FK = "MenuItemID";
+    private static final String QUANTITY = "Quantity";
+    private static final String ITEM_PRICE = "Price";
 
     public DatabaseHandler(Context context) {
         super(context, "qlbh", null, 1);
@@ -94,13 +100,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_BILL_TABLE = "CREATE TABLE " + TABLE_BILL + " (" +
                 BILL_ID + " LONG PRIMARY KEY, " +
-                TABLE_ID + " INTEGER, " +
                 TOTAL_AMOUNT + " REAL, " +
-                FOOD_ITEM_NAME + " TEXT, " +
                 TIME + " TEXT, " +
-                DATE + " TEXT, " +
-                "FOREIGN KEY (" + TABLE_ID + ") REFERENCES " + TABLE_NAME + "(" + ID_COL_TABLE + ")," +
-                "FOREIGN KEY(" + FOOD_ITEM_NAME + ") REFERENCES " + MENU_ITEM_TABLE + "(" + ITEM_NAME + "))";
+                DATE + " TEXT)";
+
+        // Tạo bảng BILL_ITEM_TABLE
+        String CREATE_BILL_ITEM_TABLE = "CREATE TABLE " + BILL_ITEM_TABLE + " (" +
+                BILL_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BILL_ID_FK + " INTEGER, " +
+                MENU_ITEM_ID_FK + " INTEGER, " +
+                QUANTITY + " INTEGER, " +
+                ITEM_PRICE + " REAL, " +
+                FOOD_ITEM_NAME + " TEXT, " + // Thêm tên món ăn vào bảng này
+                "FOREIGN KEY (" + BILL_ID_FK + ") REFERENCES " + TABLE_BILL + "(" + BILL_ID + "), " +
+                "FOREIGN KEY (" + MENU_ITEM_ID_FK + ") REFERENCES " + MENU_ITEM_TABLE + "(" + MENU_ITEM_ID + "))";
 
         // Execute the table creation statements
         db.execSQL(CREATE_TABLE_EMPLOYEE);
@@ -108,6 +121,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_CATEGORY);
         db.execSQL(CREATE_TABLE_ITEM);
         db.execSQL(CREATE_BILL_TABLE);
+        db.execSQL(CREATE_BILL_ITEM_TABLE);
     }
 
     @Override
@@ -164,7 +178,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(PRICE, product.getPrice()); // Thêm giá món ăn
         values.put(ITEM_IMAGE_PATH, product.getImage()); // Thêm đường dẫn hoặc URL hình ảnh
 
-        // Chèn vào bảng Item (MenuItem)
+        // Chèn vào bảng MENU_ITEM_TABLE
         db.insert(MENU_ITEM_TABLE, null, values);
 
         // Đóng kết nối với database
@@ -176,9 +190,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(BILL_ID, bill.getBillId()); // Thêm ID của hóa đơn
-        values.put(TABLE_ID, bill.getTableId()); // Thêm ID của bàn
         values.put(TOTAL_AMOUNT, bill.getTotalAmount()); // Thêm tổng số tiền
-        values.put(FOOD_ITEM_NAME, bill.getFoodItemName()); // Thêm tên món ăn
         values.put(TIME, bill.getTime()); // Thêm thời gian
         values.put(DATE, bill.getDate()); // Thêm ngày
 
@@ -200,6 +212,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return isEmpty;
     }
 
+    public void insertBillItem(long billId, long menuItemId, int quantity, double price, String foodItemName) {
+        // Thực hiện chèn dữ liệu vào database với tên món ăn
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BILL_ID_FK, billId); // Chèn ID hóa đơn
+        contentValues.put(MENU_ITEM_ID_FK, menuItemId); // Chèn ID món ăn
+        contentValues.put(QUANTITY, quantity); // Chèn số lượng món ăn
+        contentValues.put(ITEM_PRICE, price); // Chèn giá món ăn
+        contentValues.put(FOOD_ITEM_NAME, foodItemName); // Chèn tên món ăn vào ContentValues
+
+        // Chèn vào BILL_ITEM_TABLE
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(BILL_ITEM_TABLE, null, contentValues);
+
+        // Đóng kết nối với database
+        db.close();
+    }
 
     // Initialize data only if tables are empty
     public void initData() {
@@ -238,14 +266,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
         if (isTableEmpty(TABLE_BILL)) {
-            insertBill(new Bill(1, 1, 100000, "Ba rọi", "12:00", "2024-11-01"));
-            insertBill(new Bill(2, 5, 90000, "Tokbokki truyền thống", "13:00", "2024-10-01"));
-            insertBill(new Bill(3, 9, 200000, "Lẩu bò", "19:00", "2024-10-01"));
-            insertBill(new Bill(4, 13, 50000, "Chả cá hàn quốc", "20:00", "2024-11-02"));
-            insertBill(new Bill(5, 6, 95000, "Tokbokki sốt cay", "18:30", "2024-10-03"));
-            insertBill(new Bill(6, 12, 220000, "Lẩu tokbokki", "19:00", "2024-11-03"));
-            insertBill(new Bill(7, 14, 45000, "Bánh mì trung quốc", "15:00", "2024-11-04"));
-            insertBill(new Bill(8, 16, 60000, "Dòi hàn quốc", "17:45", "2024-11-05"));
+            insertBill(new Bill(1, 100000, "12:00", "2024-11-01"));
+            insertBill(new Bill(5, 90000, "13:00", "2024-10-01"));
+            insertBill(new Bill(9, 200000, "19:00", "2024-10-01"));
+            insertBill(new Bill(13, 50000, "20:00", "2024-11-02"));
+            insertBill(new Bill(6, 95000, "18:30", "2024-10-03"));
+            insertBill(new Bill(12, 220000, "19:00", "2024-11-03"));
+            insertBill(new Bill(14, 45000, "15:00", "2024-11-04"));
+            insertBill(new Bill(16, 60000, "17:45", "2024-11-05"));
+        }
+
+        if (isTableEmpty(BILL_ITEM_TABLE)) {
+            // Insert Bill Items with the updated parameters
+            insertBillItem(1, 1, 2, 100000, "Ba rọi"); // Bill 1: 2 Ba rọi, 100000 each
+            insertBillItem(2, 5, 1, 90000, "Tokbokki truyền thống"); // Bill 2: 1 Tokbokki truyền thống, 90000 each
+            insertBillItem(3, 9, 1, 200000, "Lẩu bò"); // Bill 3: 1 Lẩu bò, 200000 each
+            insertBillItem(4, 13, 1, 50000, "Chả cá hàn quốc"); // Bill 4: 1 Chả cá hàn quốc, 50000 each
+            insertBillItem(5, 6, 1, 95000, "Tokbokki sốt cay"); // Bill 5: 1 Tokbokki sốt cay, 95000 each
+            insertBillItem(6, 12, 1, 220000, "Lẩu tokbokki"); // Bill 6: 1 Lẩu tokbokki, 220000 each
+            insertBillItem(7, 14, 1, 45000, "Bánh mì trung quốc"); // Bill 7: 1 Bánh mì trung quốc, 45000 each
+            insertBillItem(8, 16, 1, 60000, "Dòi hàn quốc"); // Bill 8: 1 Dòi hàn quốc, 60000 each
+
+            // Insert more bill items for the new bill with billId 9
+            insertBillItem(9, 12, 1, 220000, "Lẩu tokbokki"); // Bill 9: 1 Lẩu tokbokki, 220000 each
+            insertBillItem(9, 1, 2, 100000, "Ba rọi"); // Bill 9: 2 Ba rọi, 100000 each
+            insertBillItem(9, 16, 1, 60000, "Dòi hàn quốc"); // Bill 9: 1 Dòi hàn quốc, 60000 each
         }
     }
 
@@ -275,13 +320,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 int billId = cursor.getInt(cursor.getColumnIndexOrThrow(BILL_ID));
-                int tableId = cursor.getInt(cursor.getColumnIndexOrThrow(TABLE_ID));
                 double totalAmount = cursor.getDouble(cursor.getColumnIndexOrThrow(TOTAL_AMOUNT));
-                String foodItemName = cursor.getString(cursor.getColumnIndexOrThrow(FOOD_ITEM_NAME));
                 String time = cursor.getString(cursor.getColumnIndexOrThrow(TIME));
                 String dateValue = cursor.getString(cursor.getColumnIndexOrThrow(DATE));
 
-                Bill bill = new Bill(billId, tableId, totalAmount, foodItemName, time, dateValue);
+                Bill bill = new Bill(billId, totalAmount, time, dateValue);
                 bills.add(bill);
             } while (cursor.moveToNext());
         }

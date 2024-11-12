@@ -22,13 +22,13 @@ import com.example.nhom10.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class Pay_Activty extends AppCompatActivity {
 
     private ListView productListView;
     private OrderAdapter orderAdapter;
     private TextView totalPriceTextView; // Thêm TextView để hiển thị tổng tiền
-    private TextView tvTable; // TextView hiển thị số bàn
     private Button btnCancel, btnPay; // Thêm nút hủy
     private DatabaseHandler databaseHandler; // Khai báo DatabaseHandler
 
@@ -49,14 +49,7 @@ public class Pay_Activty extends AppCompatActivity {
         // Khởi tạo DatabaseHandler
         databaseHandler = new DatabaseHandler(this);
 
-        // Lấy tableId từ Intent
-        int tableId = getIntent().getIntExtra("TABLE_ID", -1); // Đặt -1 làm mặc định để dễ kiểm tra lỗi
-        if (tableId == -1) {
-            Log.d("BillActivity", "Invalid tableId: -1");
-        }
-
-        tvTable.setText("Bàn " + tableId);
-
+        // Lấy danh sách sản phẩm đã chọn từ Intent
         ArrayList<Product> selectedProducts = getIntent().getParcelableArrayListExtra("selectedProducts");
 
         // Ánh xạ ListView và thiết lập Adapter
@@ -70,9 +63,9 @@ public class Pay_Activty extends AppCompatActivity {
         // Thêm sự kiện cho nút Pay
         btnPay.setOnClickListener(view -> {
             // Thêm hóa đơn vào cơ sở dữ liệu
-            addBillToDatabase(tableId, totalPrice, selectedProducts);
+            addBillToDatabase(totalPrice, selectedProducts);
             // Mở activity chi tiết thanh toán
-            openPayDetailsActivity(tableId, totalPrice, selectedProducts);
+            openPayDetailsActivity(totalPrice, selectedProducts);
         });
     }
 
@@ -80,7 +73,6 @@ public class Pay_Activty extends AppCompatActivity {
         productListView = findViewById(R.id.item_listView);
         totalPriceTextView = findViewById(R.id.total_price);
         btnCancel = findViewById(R.id.btn_cancel); // Khai báo nút hủy
-        tvTable = findViewById(R.id.tv_table); // Khai báo TextView hiển thị số bàn
         btnPay = findViewById(R.id.btn_pay);
     }
 
@@ -102,27 +94,45 @@ public class Pay_Activty extends AppCompatActivity {
         return total;
     }
 
-    private void addBillToDatabase(int tableId, double totalPrice, ArrayList<Product> selectedProducts) {
-        for (Product product : selectedProducts) {
-            // Tạo ID dựa trên thời gian hiện tại
-            String idString = generateBillId();
+    private void addBillToDatabase(double totalPrice, ArrayList<Product> selectedProducts) {
+        // Tạo ID dựa trên thời gian hiện tại
+        String idString = generateBillId();
+        long billId = Long.parseLong(idString);
 
-            // Tạo một hóa đơn mới cho mỗi sản phẩm đã chọn với thời gian và ngày thực tế
-            Bill bill = new Bill(
-                    Long.parseLong(idString), // Chuyển đổi chuỗi thành số nguyên
-                    tableId,
-                    totalPrice,
-                    product.getName(),
-                    getCurrentTime(), // Lấy thờsi gian thực tế
-                    getCurrentDate()  // Lấy ngày thực tế
-            );
-            databaseHandler.insertBill(bill); // Thêm hóa đơn vào database
+        // Tạo hóa đơn mới
+        Bill bill = new Bill(
+                billId,              // Bill ID
+                totalPrice,          // Tổng số tiền
+                getCurrentTime(),    // Thời gian thực tế
+                getCurrentDate()     // Ngày thực tế
+        );
+
+        // Thêm hóa đơn vào database (BILL_TABLE)
+        databaseHandler.insertBill(bill);
+
+        // Tạo một Map để lưu trữ số lượng cho mỗi món ăn
+        HashMap<Long, Integer> productQuantityMap = new HashMap<>();
+
+        // Đếm số lượng mỗi món ăn trong danh sách
+        for (Product product : selectedProducts) {
+            long menuItemId = product.getMenuItemId();
+            productQuantityMap.put(menuItemId, productQuantityMap.getOrDefault(menuItemId, 0) + 1);
+        }
+
+        // Thêm mỗi sản phẩm vào BILL_ITEM_TABLE với số lượng đã tính toán
+        for (Product product : selectedProducts) {
+            long menuItemId = product.getMenuItemId();
+            double itemPrice = product.getPrice();
+            int quantity = productQuantityMap.get(menuItemId);  // Lấy số lượng từ Map
+            String foodItemName = product.getName(); // Tên món ăn
+
+            // Thêm sản phẩm vào BILL_ITEM_TABLE
+            databaseHandler.insertBillItem(billId, menuItemId, quantity, itemPrice, foodItemName);
         }
     }
 
-    private void openPayDetailsActivity(int tableId, double totalPrice, ArrayList<Product> selectedProducts) {
+    private void openPayDetailsActivity(double totalPrice, ArrayList<Product> selectedProducts) {
         Intent intent = new Intent(this, PayDetails_Activity.class);
-        intent.putExtra("TABLE_ID", tableId);
         intent.putExtra("TOTAL_PRICE", totalPrice);
 
         // Tạo mã đơn hàng để gửi vào Intent
@@ -142,7 +152,6 @@ public class Pay_Activty extends AppCompatActivity {
         intent.putParcelableArrayListExtra("SELECTED_PRODUCTS", selectedProducts);
         startActivity(intent);
     }
-
 
     private String getCurrentTime() {
         // Lấy thời gian hiện tại theo định dạng "HH:mm"
@@ -168,5 +177,4 @@ public class Pay_Activty extends AppCompatActivity {
         // Định dạng ID: HHmmssddMM (không bao gồm năm)
         return String.format("%02d%02d%02d%02d%02d", hour, minute, second, day, month);
     }
-
 }

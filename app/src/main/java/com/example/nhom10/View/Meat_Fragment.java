@@ -173,8 +173,8 @@ public class Meat_Fragment extends Fragment {
         Intent intent = new Intent(getActivity(), Pay_Activty.class);
         intent.putParcelableArrayListExtra("selectedProducts", selectedProducts); // Truyền danh sách sản phẩm
         intent.putExtra("totalPrice", totalPrice); // Truyền tổng giá tiền
-        intent.putExtra("TABLE_ID", tableId); // Truyền tableId
         startActivity(intent);
     }
+
 
 }

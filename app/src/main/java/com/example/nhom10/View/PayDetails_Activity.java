@@ -1,6 +1,5 @@
 package com.example.nhom10.View;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,16 +10,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.nhom10.Model.Product;
 import com.example.nhom10.R;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class PayDetails_Activity extends AppCompatActivity {
 
-    TextView textViewTable, textViewTotalAmount, textViewOrderId, textViewOrderDate, textViewTime, textViewDishName;
+    TextView textViewTotalAmount, textViewOrderId, textViewOrderDate, textViewTime, textViewDishName;
     Button btnClose;
 
     @Override
@@ -36,7 +33,6 @@ public class PayDetails_Activity extends AppCompatActivity {
         });
 
         // Ánh xạ các view
-        textViewTable = findViewById(R.id.textViewTable);
         textViewTotalAmount = findViewById(R.id.textViewTotalAmount);
         textViewOrderId = findViewById(R.id.textViewOrderId);
         textViewOrderDate = findViewById(R.id.textViewOrderDate);
@@ -45,13 +41,11 @@ public class PayDetails_Activity extends AppCompatActivity {
         btnClose = findViewById(R.id.btn_Close);
 
         // Nhận dữ liệu từ Intent
-        int tableId = getIntent().getIntExtra("TABLE_ID", -1);
         double totalPrice = getIntent().getDoubleExtra("TOTAL_PRICE", 0.0);
         String orderId = getIntent().getStringExtra("ORDER_ID");
         String dishNames = getIntent().getStringExtra("DISH_NAME"); // Nhận tên món từ Intent
 
-        // Hiển thị dữ liệu bàn và tổng tiền
-        textViewTable.setText("Bàn: " + tableId);
+        // Hiển thị dữ liệu tổng tiền
         textViewTotalAmount.setText("Tổng tiền: " + totalPrice + " VND");
 
         // Tạo ngày hiện tại
