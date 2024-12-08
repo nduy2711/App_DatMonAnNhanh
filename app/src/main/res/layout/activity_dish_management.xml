@@ -35,7 +35,9 @@
         android:layout_height="wrap_content"
         android:spinnerMode="dropdown"
         android:padding="8dp"
-        android:background="?android:attr/selectableItemBackground" />
+        android:layout_margin="10dp"
+        android:background="@color/spinner_background"
+        android:popupBackground="@color/spinner_popup_background" />
 
     <!-- ListView for displaying dishes -->
     <ListView

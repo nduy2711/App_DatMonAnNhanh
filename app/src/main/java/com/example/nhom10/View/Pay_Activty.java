@@ -1,14 +1,18 @@
 package com.example.nhom10.View;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -29,7 +33,7 @@ public class Pay_Activty extends AppCompatActivity {
     private ListView productListView;
     private OrderAdapter orderAdapter;
     private TextView totalPriceTextView; // Thêm TextView để hiển thị tổng tiền
-    private Button btnCancel, btnPay; // Thêm nút hủy
+    private Button btnCancel, btnPay, btn_qr_pay; // Thêm nút hủy
     private DatabaseHandler databaseHandler; // Khai báo DatabaseHandler
 
     @Override
@@ -74,6 +78,7 @@ public class Pay_Activty extends AppCompatActivity {
         totalPriceTextView = findViewById(R.id.total_price);
         btnCancel = findViewById(R.id.btn_cancel); // Khai báo nút hủy
         btnPay = findViewById(R.id.btn_pay);
+        btn_qr_pay = findViewById(R.id.btn_qr_pay);
     }
 
     void addEvents() {
@@ -82,6 +87,22 @@ public class Pay_Activty extends AppCompatActivity {
             // Đóng activity và quay lại màn hình trước đó
             finish();
         });
+
+        btn_qr_pay.setOnClickListener(view -> {
+            // Lấy danh sách sản phẩm đã chọn
+            ArrayList<Product> selectedProducts = getIntent().getParcelableArrayListExtra("selectedProducts");
+            double totalPrice = calculateTotalPrice(selectedProducts);
+
+            // Hiển thị QR code và đợi 5 giây trước khi thực hiện tiếp
+            showQRDialog(() -> {
+                // Thêm hóa đơn vào cơ sở dữ liệu
+                addBillToDatabase(totalPrice, selectedProducts);
+
+                // Mở activity chi tiết thanh toán
+                openPayDetailsActivity(totalPrice, selectedProducts);
+            });
+        });
+
     }
 
     private double calculateTotalPrice(ArrayList<Product> products) {
@@ -129,6 +150,7 @@ public class Pay_Activty extends AppCompatActivity {
             // Thêm sản phẩm vào BILL_ITEM_TABLE
             databaseHandler.insertBillItem(billId, menuItemId, quantity, itemPrice, foodItemName);
         }
+
     }
 
     private void openPayDetailsActivity(double totalPrice, ArrayList<Product> selectedProducts) {
@@ -166,15 +188,43 @@ public class Pay_Activty extends AppCompatActivity {
     }
 
     private String generateBillId() {
-        // Lấy thời gian hiện tại
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY); // Lấy giờ (0-23)
-        int minute = calendar.get(Calendar.MINUTE); // Lấy phút (0-59)
-        int second = calendar.get(Calendar.SECOND); // Lấy giây (0-59)
-        int day = calendar.get(Calendar.DAY_OF_MONTH); // Lấy ngày (1-31)
-        int month = calendar.get(Calendar.MONTH) + 1; // Lấy tháng (0-11, thêm 1)
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        int second = calendar.get(Calendar.SECOND);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
 
-        // Định dạng ID: HHmmssddMM (không bao gồm năm)
-        return String.format("%02d%02d%02d%02d%02d", hour, minute, second, day, month);
+        // Tính số giây từ đầu ngày
+        int secondsOfDay = hour * 3600 + minute * 60 + second;
+
+        // Định dạng ID: ssddMM (giây từ đầu ngày + ngày + tháng)
+        return String.format("%05d%02d%02d", secondsOfDay, day, month);
     }
+
+    private void showQRDialog(Runnable onDismissAction) {
+        // Lấy ảnh QR từ tài nguyên drawable
+        int qrImageResId = R.drawable.qrcode; // Thay bằng ID hình ảnh QR của bạn
+
+        // Tạo một AlertDialog để hiển thị hình ảnh QR
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View qrView = getLayoutInflater().inflate(R.layout.dialog_qr_code, null); // Layout của dialog chứa QR code
+        ImageView qrImageView = qrView.findViewById(R.id.img_qr_code);
+
+        qrImageView.setImageResource(qrImageResId);
+
+        builder.setView(qrView);
+        AlertDialog qrDialog = builder.create();
+        qrDialog.show();
+
+        // Tự động đóng dialog sau 5 giây và thực hiện hành động tiếp theo
+        new Handler().postDelayed(() -> {
+            qrDialog.dismiss();
+            if (onDismissAction != null) {
+                onDismissAction.run();
+            }
+        }, 5000);
+    }
+
+
 }

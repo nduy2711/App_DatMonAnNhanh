@@ -61,7 +61,7 @@ public class DishAdapter extends BaseAdapter {
         TextView productPrice = convertView.findViewById(R.id.dish_price);
         // Set product name and price
         productName.setText(product.getName());
-        productPrice.setText(String.valueOf(product.getPrice())); // Set product price
+        productPrice.setText(String.format("%,d VNĐ", (int) product.getPrice()));// Set product price
 
         // Kiểm tra xem đường dẫn hình ảnh có phải là URI không
         if (product.getImage().startsWith("content://") || product.getImage().startsWith("http://") || product.getImage().startsWith("https://")) {
