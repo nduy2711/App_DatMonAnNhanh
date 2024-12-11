@@ -94,9 +94,9 @@ public class Main_Activity extends AppCompatActivity {
                 if (id == R.id.item_info) {
                     startActivity(new Intent(Main_Activity.this, InfoActivity.class));
                 } else if (id == R.id.item_statistical) {
-                    startActivity(new Intent(Main_Activity.this, StatisticalActivity.class));
+                    startActivity(new Intent(Main_Activity.this, revenueActivity.class));
                 } else if (id == R.id.item_book) {
-                    startActivity(new Intent(Main_Activity.this, BookActivity.class));
+                    startActivity(new Intent(Main_Activity.this, BookedTablesActivity.class));
                 } else if (id == R.id.item_bill) {
                     startActivity(new Intent(Main_Activity.this, Bill_Activity.class));
                 } else if (id == R.id.item_logout) {

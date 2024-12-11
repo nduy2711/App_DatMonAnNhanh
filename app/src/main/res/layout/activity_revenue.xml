@@ -5,13 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Bill_Activity">
+    tools:context=".View.revenueActivity">
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#F2F2F2">
+        android:padding="16dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -23,26 +24,6 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme" />
 
-
-        <!-- Title Bar with Back Button -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#90CAF9"
-            android:padding="8dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hóa đơn"
-                android:textSize="20sp"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Spinner Layout -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,16 +50,27 @@
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
-        <!-- RecyclerView for displaying invoices -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewInvoices"
-            android:layout_width="match_parent"
-            android:layout_height="200pt"
-            android:layout_marginBottom="8dp"/>
 
+
+        <!-- Biểu đồ vòng tròn -->
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Tổng doanh thu -->
+        <TextView
+            android:id="@+id/totalRevenue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Tổng doanh thu: 0 VND"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- NavigationView for drawer menu -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="match_parent"
@@ -87,5 +79,6 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu" />
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

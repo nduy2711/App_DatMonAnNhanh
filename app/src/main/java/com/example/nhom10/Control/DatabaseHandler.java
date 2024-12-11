@@ -1,5 +1,6 @@
 package com.example.nhom10.Control;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,12 +8,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.nhom10.Model.Bill;
+import com.example.nhom10.Model.BillItem;
+import com.example.nhom10.Model.BookedTable;
 import com.example.nhom10.Model.Employee;
 import com.example.nhom10.Model.Category;
 import com.example.nhom10.Model.Product;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -58,6 +63,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String QUANTITY = "Quantity";
     private static final String ITEM_PRICE = "Price";
 
+    private static final String BOOK_TABLE = "BookTable";
+    private static final String BOOKING_ID = "BookingID";
+    private static final String CUSTOMER_NAME = "CustomerName";
+    private static final String PHONE = "Phone";
+    private static final String EMAIL = "Email";
+    private static final String BOOKING_DATE = "BookingDate";
+    private static final String BOOKING_TIME = "BookingTime";
+    private static final String TABLE_ID_FK = "TableID";
+
+
     public DatabaseHandler(Context context) {
         super(context, "qlbh", null, 1);
     }
@@ -73,6 +88,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + EMAIL_COL_EMPLOYEE + " TEXT NOT NULL, "
                 + PHONE_COL_EMPLOYEE + " TEXT NOT NULL, "
                 + CCCD_COL_EMPLOYEE + " TEXT NOT NULL)";
+
+        String CREATE_BOOK_TABLE = "CREATE TABLE " + BOOK_TABLE + " ("
+                + BOOKING_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + CUSTOMER_NAME + " TEXT NOT NULL, "
+                + PHONE + " TEXT NOT NULL, "
+                + EMAIL + " TEXT NOT NULL, "
+                + BOOKING_DATE + " TEXT NOT NULL, "
+                + BOOKING_TIME + " TEXT NOT NULL, "
+                + TABLE_ID_FK + " INTEGER, "
+                + "FOREIGN KEY (" + TABLE_ID_FK + ") REFERENCES " + TABLE_NAME + "(" + ID_COL_TABLE + "))";
 
         // Tạo bảng RestaurantTable
         String CREATE_TABLE_RESTAURANT_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
@@ -122,6 +147,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_ITEM);
         db.execSQL(CREATE_BILL_TABLE);
         db.execSQL(CREATE_BILL_ITEM_TABLE);
+        db.execSQL(CREATE_BOOK_TABLE);
     }
 
     @Override
@@ -132,7 +158,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CATEGORY_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MENU_ITEM_TABLE);
-
+        db.execSQL("DROP TABLE IF EXISTS " + BOOK_TABLE);
         // Gọi lại onCreate để tạo lại các bảng mới
         onCreate(db);
     }
@@ -158,6 +184,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(EMPLOYEE_TABLE, null, values);
         db.close();
     }
+
+    public void insertBooking(String customerName, String phone, String email, String bookingDate, String bookingTime, int tableId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(CUSTOMER_NAME, customerName);
+        values.put(PHONE, phone);
+        values.put(EMAIL, email);
+        values.put(BOOKING_DATE, bookingDate);
+        values.put(BOOKING_TIME, bookingTime);
+        values.put(TABLE_ID_FK, tableId);
+        db.insert(BOOK_TABLE, null, values);
+        db.close();
+    }
+
 
     public void insertCategory(Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -331,6 +371,58 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return bills;
+    }
+
+
+    public Map<String, Float> getRevenueByCategoryForMonth(int month, int year) {
+        Map<String, Float> revenueByCategory = new HashMap<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // SQL query to join Bill_Item and Item tables, filter by month and year, and group by Category
+        String query = "SELECT c." + CATEGORY_NAME + ", SUM(bi." + QUANTITY + " * bi." + ITEM_PRICE + ") AS revenue " +
+                "FROM " + BILL_ITEM_TABLE + " bi " +
+                "JOIN " + MENU_ITEM_TABLE + " mi ON bi." + MENU_ITEM_ID_FK + " = mi." + MENU_ITEM_ID + " " +
+                "JOIN " + CATEGORY_TABLE + " c ON mi." + CATEGORY_ID_FK + " = c." + CATEGORY_ID + " " +
+                "JOIN " + TABLE_BILL + " b ON bi." + BILL_ID_FK + " = b." + BILL_ID + " " +
+                "WHERE strftime('%m', b." + DATE + ") = ? AND strftime('%Y', b." + DATE + ") = ? " +
+                "GROUP BY c." + CATEGORY_NAME;
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.format("%02d", month), String.valueOf(year)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                String categoryName = cursor.getString(cursor.getColumnIndexOrThrow(CATEGORY_NAME));
+                float revenue = (float) cursor.getDouble(cursor.getColumnIndexOrThrow("revenue"));
+                revenueByCategory.put(categoryName, revenue);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return revenueByCategory;
+    }
+
+    public List<BookedTable> getAllBookedTables() {
+        List<BookedTable> bookedTables = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + BOOK_TABLE, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String customerName = cursor.getString(cursor.getColumnIndexOrThrow(CUSTOMER_NAME));
+                String phone = cursor.getString(cursor.getColumnIndexOrThrow(PHONE));
+                String email = cursor.getString(cursor.getColumnIndexOrThrow(EMAIL));
+                String bookingDate = cursor.getString(cursor.getColumnIndexOrThrow(BOOKING_DATE));
+                String bookingTime = cursor.getString(cursor.getColumnIndexOrThrow(BOOKING_TIME));
+
+                BookedTable bookedTable = new BookedTable(customerName, phone, email, bookingDate, bookingTime);
+                bookedTables.add(bookedTable);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return bookedTables;
     }
 
 

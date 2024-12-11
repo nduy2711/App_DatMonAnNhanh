@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.constraintlayout)
 
     // Thêm Glide
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.github.bumptech.glide:glide:4.15.0") // Kiểm tra phiên bản mới nhất trên trang Glide
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.0") // Nếu bạn sử dụng Glide 4.x
 
