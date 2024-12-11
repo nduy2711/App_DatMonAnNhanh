@@ -28,7 +28,7 @@
     <ListView
         android:id="@+id/item_listView"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="400dp"
         android:layout_marginTop="16dp"
         android:dividerHeight="1dp"
         android:background="#DDDDDD"
@@ -52,17 +52,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Thanh Toán button -->
+    <!-- Thanh Toán bằng tiền mặt button -->
     <Button
         android:id="@+id/btn_pay"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:backgroundTint="#FF0000"
-        android:text="THANH TOÁN"
+        android:text="THANH TOÁN BẰNG TIỀN MẶT"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/total_price"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Thanh toán bằng QR button -->
+    <Button
+        android:id="@+id/btn_qr_pay"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#FF0000"
+        android:text="THANH TOÁN BẰNG QR"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/btn_pay"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -73,11 +87,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:backgroundTint="#FF0000"
-        android:text="Hủy"
+        android:text="HỦY"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/btn_pay"
+        app:layout_constraintTop_toBottomOf="@id/btn_qr_pay"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

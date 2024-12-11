@@ -104,7 +104,7 @@ public class Item_Activity extends AppCompatActivity {
                 } else if (id == R.id.item_bill) {
                     startActivity(new Intent(Item_Activity.this, Bill_Activity.class));
                 } else if (id == R.id.item_logout) {
-                    // Xử lý đăng xuất nếu cần
+                    startActivity(new Intent(Item_Activity.this, Login_Activity.class));
                 } else if (id == R.id.item_dish_management) {
                     startActivity(new Intent(Item_Activity.this, Dish_Management_Activity.class));
                 } else if (id == R.id.item_order) {
@@ -113,6 +113,7 @@ public class Item_Activity extends AppCompatActivity {
                     intent.putExtra("load_order_fragment", true); // Set flag to load order fragment
                     startActivity(intent);
                 }
+
                 drawerLayout.closeDrawers(); // Đóng Navigation Drawer sau khi nhấp
                 return true;
             }

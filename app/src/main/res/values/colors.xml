@@ -2,4 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="spinner_background">#FFEB3B</color> <!-- Màu vàng cho phần chính -->
+    <color name="spinner_popup_background">#CDDC39</color> <!-- Màu xanh nhạt cho danh sách -->
 </resources>

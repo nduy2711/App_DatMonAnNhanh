@@ -64,8 +64,9 @@ public class Login_Activity extends AppCompatActivity {
                 String password = edtPassword.getText().toString();
                 if (loginHandler.checkLogin(username, password)) {
                     Toast.makeText(Login_Activity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(Login_Activity.this, Main_Activity.class));
-                    startActivity(getIntent());
+                    Intent intent = new Intent(Login_Activity.this, Item_Activity.class);
+                    intent.putExtra("load_order_fragment", true); // Set flag to load order fragment
+                    startActivity(intent);
                 } else {
                     Toast.makeText(Login_Activity.this, "Tên tài khoản hoac mật khẩu không đúng", Toast.LENGTH_SHORT).show();
                 }
