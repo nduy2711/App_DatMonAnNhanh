@@ -168,7 +168,6 @@ public class Meat_Fragment extends Fragment {
             Toast.makeText(getContext(), "Không có món nào trong giỏ hàng!", Toast.LENGTH_SHORT).show();
             return;
         }
-
         // Tạo một Intent để chuyển sang Pay_Activty
         Intent intent = new Intent(getActivity(), Pay_Activty.class);
         intent.putParcelableArrayListExtra("selectedProducts", selectedProducts); // Truyền danh sách sản phẩm

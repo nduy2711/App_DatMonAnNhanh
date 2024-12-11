@@ -148,7 +148,8 @@ public class Pay_Activty extends AppCompatActivity {
             String foodItemName = product.getName(); // Tên món ăn
 
             // Thêm sản phẩm vào BILL_ITEM_TABLE
-            databaseHandler.insertBillItem(billId, menuItemId, quantity, itemPrice, foodItemName);
+            databaseHandler.insertBillItem(billId, menuItemId,
+                    quantity, itemPrice, foodItemName);
         }
 
     }
